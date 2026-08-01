@@ -47,8 +47,9 @@
   .enquire p{font-size:13.5px; color:var(--graphite); line-height:1.6; margin-bottom:12px;}
   .enquire a.cta{
     display:inline-block; background:var(--gold); color:var(--ink); font-weight:600; font-size:13.5px;
-    padding:10px 18px; border-radius:2px; font-family:'Work Sans',sans-serif;
+    padding:10px 18px; border-radius:2px; font-family:'Work Sans',sans-serif; margin-right:10px; margin-bottom:8px;
   }
+  .enquire a.cta.whatsapp{background:transparent; border:1px solid var(--gold); color:var(--gold);}
 
   footer{border-top:1px solid var(--line); padding:26px 0; color:var(--graphite); font-size:12.5px;}
 
@@ -79,8 +80,9 @@
 
       <div class="enquire">
         <div class="label">Casting enquiries</div>
-        <p>All bookings and enquiries for this actor are handled directly by Joelhood Pictures Limited. Please contact the agency to initiate contact — not the actor.</p>
-        <a class="cta" href="mailto:joelhoodpictures@ymail.com?subject=Casting Enquiry — " id="enquireLink">Contact the agent</a>
+        <p>All bookings and enquiries for this actor are handled directly by Joelhood Pictures Limited. Please contact the agency by email or WhatsApp to initiate contact — not the actor.</p>
+        <a class="cta" href="mailto:joelhoodpictures@ymail.com?subject=Casting Enquiry — " id="enquireLink">Email the agent</a>
+        <a class="cta whatsapp" href="https://wa.me/260977858275?text=Casting%20enquiry%20—%20" id="whatsappLink" target="_blank" rel="noopener">WhatsApp the agent</a>
       </div>
     </div>
   </div>
@@ -90,7 +92,7 @@
 
 <script>
   // ⬇️ Paste your deployed Google Apps Script Web App URL here
-  const API_URL = 'https://script.google.com/macros/s/AKfycbyWISwWYBYFvXAMV_sU7clepOPLkosc6dbv1tUa-p-WobBKOvKmpjPlGDyONxF9HN0H/exec';
+  const API_URL = 'PASTE_YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE';
 
   const params = new URLSearchParams(location.search);
   const id = params.get('id');
@@ -132,6 +134,9 @@
 
     const enquireLink = document.getElementById('enquireLink');
     enquireLink.href = enquireLink.href.replace(/subject=.*/, 'subject=' + encodeURIComponent('Casting Enquiry — ' + a.name + ' (' + a.id + ')'));
+
+    const whatsappLink = document.getElementById('whatsappLink');
+    whatsappLink.href = whatsappLink.href.replace(/text=.*/, 'text=' + encodeURIComponent('Casting enquiry — ' + a.name + ' (' + a.id + ')'));
   }
 
   load();
