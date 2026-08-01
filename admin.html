@@ -124,7 +124,7 @@
 
 <script>
   // ⬇️ Paste your deployed Google Apps Script Web App URL here
-  const API_URL = 'https://script.google.com/macros/s/AKfycbyWISwWYBYFvXAMV_sU7clepOPLkosc6dbv1tUa-p-WobBKOvKmpjPlGDyONxF9HN0H/exec';
+  const API_URL = 'PASTE_YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE';
   let PASSWORD = '';
   let ROSTER = [];
 
@@ -162,23 +162,26 @@
   function renderRoster(actors){
     ROSTER = actors;
     document.getElementById('rosterCount').textContent = actors.length;
-    document.getElementById('rosterBody').innerHTML = actors.map(a => `
+    document.getElementById('rosterBody').innerHTML = actors.map(a => {
+      const editLink = new URL('edit.html?token=' + a.editToken, location.href).href;
+      return `
       <tr>
         <td class="id">${a.id}</td>
         <td>${a.name}<div class="linkbox">${a.category || ''}</div></td>
         <td><span class="status-pill ${a.status}">${a.status}</span></td>
         <td>
           ${a.headshot ? 'Photo uploaded' : 'No photo yet'}
-          <div class="linkbox">Private edit link:<br>${a.editLink}</div>
+          <div class="linkbox">Private edit link:<br>${editLink}</div>
         </td>
         <td class="actions">
           <button class="ghost" onclick="openEdit('${a.id}')">Edit</button>
-          <button class="ghost" onclick="copyLink('${a.editLink}')">Copy link</button>
+          <button class="ghost" onclick="copyLink('${editLink}')">Copy link</button>
           <button class="ghost" onclick="toggleStatus('${a.id}')">${a.status === 'Active' ? 'Hide' : 'Unhide'}</button>
           <button class="danger" onclick="deleteActor('${a.id}','${a.name.replace(/'/g,"")}')">Delete</button>
         </td>
       </tr>
-    `).join('');
+    `;
+    }).join('');
   }
 
   function openEdit(id){
