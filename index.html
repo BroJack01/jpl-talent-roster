@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Talent Roster — Joelhood Pictures Limited</title>
+<meta name="description" content="The official talent roster of Joelhood Pictures Limited. Browse professional actors represented by JPL.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,500&family=Work+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<style>
+  :root{
+    --ink:#14110F; --ink-2:#1C1813; --paper:#F1ECE1; --gold:#C9A24B;
+    --pine:#24352A; --graphite:#8C8579; --line:#33291E;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{
+    background:var(--ink); color:var(--paper);
+    font-family:'Work Sans',sans-serif; font-size:16px; line-height:1.5;
+    min-height:100vh;
+  }
+  a{color:inherit; text-decoration:none;}
+  .wrap{max-width:1120px; margin:0 auto; padding:0 28px;}
+
+  header.top{border-bottom:1px solid var(--line); padding:22px 0;}
+  .top .wrap{display:flex; justify-content:space-between; align-items:center; gap:16px; flex-wrap:wrap;}
+  .brand{font-family:'IBM Plex Mono',monospace; font-size:13px; letter-spacing:.12em; text-transform:uppercase; color:var(--gold);}
+  .brand span{color:var(--graphite);}
+  nav a{font-family:'IBM Plex Mono',monospace; font-size:12px; letter-spacing:.08em; text-transform:uppercase; color:var(--graphite); border-bottom:1px solid transparent;}
+  nav a:hover{color:var(--paper); border-color:var(--gold);}
+
+  .hero{padding:64px 0 40px; border-bottom:1px solid var(--line);}
+  .hero h1{
+    font-family:'Fraunces',serif; font-weight:600; font-style:italic;
+    font-size:clamp(38px,6vw,64px); line-height:1.05; max-width:780px;
+  }
+  .hero p{color:var(--graphite); max-width:520px; margin-top:16px; font-size:16px;}
+  .hero .count{font-family:'IBM Plex Mono',monospace; color:var(--gold); font-size:13px; margin-top:22px; letter-spacing:.05em;}
+  .hero-bottom{display:flex; justify-content:space-between; align-items:flex-end; flex-wrap:wrap; gap:24px; margin-top:30px;}
+  .stamp{display:inline-flex; gap:14px; align-items:center; border:1px solid var(--gold); padding:12px 16px; border-radius:3px; background:var(--ink-2);}
+  .stamp #qr{background:var(--paper); padding:5px; border-radius:2px; line-height:0;}
+  .stamp .stamp-copy{font-family:'IBM Plex Mono',monospace; font-size:10.5px; color:var(--graphite); max-width:150px; line-height:1.5;}
+
+  .controls{padding:28px 0; display:flex; gap:14px; flex-wrap:wrap; align-items:center; border-bottom:1px solid var(--line);}
+  .search{
+    flex:1; min-width:220px; background:var(--ink-2); border:1px solid var(--line);
+    color:var(--paper); padding:12px 16px; font-family:'Work Sans',sans-serif; font-size:14px; border-radius:2px;
+  }
+  .search::placeholder{color:var(--graphite);}
+  .search:focus{outline:none; border-color:var(--gold);}
+  .filters{display:flex; gap:8px; flex-wrap:wrap;}
+  .filters button{
+    background:transparent; border:1px solid var(--line); color:var(--graphite);
+    padding:9px 14px; font-family:'IBM Plex Mono',monospace; font-size:12px; letter-spacing:.05em;
+    text-transform:uppercase; cursor:pointer; border-radius:2px; transition:.15s;
+  }
+  .filters button:hover{border-color:var(--gold); color:var(--paper);}
+  .filters button.active{background:var(--gold); border-color:var(--gold); color:var(--ink); font-weight:600;}
+
+  .grid{padding:40px 0 80px; display:grid; grid-template-columns:repeat(auto-fill,minmax(230px,1fr)); gap:22px;}
+  .card{
+    background:var(--ink-2); border:1px solid var(--line); border-radius:3px; overflow:hidden;
+    cursor:pointer; transition:.2s; position:relative;
+  }
+  .card:hover{border-color:var(--gold); transform:translateY(-2px);}
+  .card .photo{
+    width:100%; aspect-ratio:3/4; background:var(--pine) center/cover no-repeat;
+    display:flex; align-items:center; justify-content:center; color:var(--graphite);
+    font-family:'IBM Plex Mono',monospace; font-size:11px;
+  }
+  .card .id-tag{
+    position:absolute; top:10px; left:10px; background:rgba(20,17,15,.75); border:1px solid var(--gold);
+    color:var(--gold); font-family:'IBM Plex Mono',monospace; font-size:10px; padding:3px 7px; letter-spacing:.05em; border-radius:2px;
+  }
+  .card .info{padding:14px 16px 18px;}
+  .card .info h3{font-family:'Fraunces',serif; font-weight:600; font-size:19px; margin-bottom:4px;}
+  .card .info .cat{font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--gold); letter-spacing:.05em; text-transform:uppercase;}
+  .card .info .lang{color:var(--graphite); font-size:12.5px; margin-top:6px;}
+
+  .empty{padding:60px 0; text-align:center; color:var(--graphite); font-family:'IBM Plex Mono',monospace; font-size:13px;}
+
+  footer{border-top:1px solid var(--line); padding:30px 0; color:var(--graphite); font-size:12.5px; display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px;}
+  footer a{color:var(--gold);}
+
+  @media(max-width:520px){ .top .wrap{flex-direction:column; align-items:flex-start;} }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <div class="brand">Joelhood Pictures <span>· Talent Roster</span></div>
+    <nav><a href="admin.html">Agent Login</a></nav>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <h1>Actors, on record.</h1>
+    <p>The official talent roster of Joelhood Pictures Limited. Every profile here is verified and managed directly by JPL — built for producers and directors casting anywhere in the world. All casting enquiries are handled through the agency.</p>
+    <div class="hero-bottom">
+      <div class="count" id="count">Loading roster…</div>
+      <div class="stamp">
+        <div id="qr"></div>
+        <div class="stamp-copy">One code, the whole roster. Scan to browse — for print, cards, and casting sheets.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="wrap">
+  <div class="controls">
+    <input class="search" id="search" type="text" placeholder="Search by name or language…">
+    <div class="filters" id="filters"></div>
+  </div>
+  <div class="grid" id="grid"></div>
+  <div class="empty" id="empty" style="display:none;">No actors match that search.</div>
+</div>
+
+<footer>
+  <div class="wrap" style="display:flex; justify-content:space-between; width:100%; flex-wrap:wrap; gap:10px;">
+    <span>Joackim Joel Sakala ©2026. All Rights Reserved.</span>
+    <span>Represented by Joelhood Pictures Limited</span>
+  </div>
+</footer>
+
+<script>
+  // ⬇️ Paste your deployed Google Apps Script Web App URL here
+  const API_URL = 'https://script.google.com/macros/s/AKfycbyWISwWYBYFvXAMV_sU7clepOPLkosc6dbv1tUa-p-WobBKOvKmpjPlGDyONxF9HN0H/exec';
+
+  let ACTORS = [];
+  let activeCategory = 'All';
+
+  async function loadActors(){
+    try{
+      const res = await fetch(API_URL + '?action=list');
+      const data = await res.json();
+      if(!data.ok){ document.getElementById('count').textContent = 'Unable to load roster.'; return; }
+      ACTORS = data.actors;
+      buildFilters();
+      render();
+    }catch(err){
+      document.getElementById('count').textContent = 'Roster unavailable — check API_URL configuration.';
+    }
+  }
+
+  function buildFilters(){
+    const cats = ['All', ...new Set(ACTORS.map(a => a.category).filter(Boolean))];
+    const el = document.getElementById('filters');
+    el.innerHTML = cats.map(c =>
+      `<button data-cat="${c}" class="${c===activeCategory?'active':''}">${c}</button>`
+    ).join('');
+    el.querySelectorAll('button').forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        activeCategory = btn.dataset.cat;
+        el.querySelectorAll('button').forEach(b=>b.classList.remove('active'));
+        btn.classList.add('active');
+        render();
+      });
+    });
+  }
+
+  function render(){
+    const q = document.getElementById('search').value.trim().toLowerCase();
+    const filtered = ACTORS.filter(a=>{
+      const matchesCat = activeCategory === 'All' || a.category === activeCategory;
+      const matchesQ = !q || a.name.toLowerCase().includes(q) || (a.languages||'').toLowerCase().includes(q);
+      return matchesCat && matchesQ;
+    });
+    document.getElementById('count').textContent = `${ACTORS.length} actor${ACTORS.length===1?'':'s'} on the roster`;
+    const grid = document.getElementById('grid');
+    document.getElementById('empty').style.display = filtered.length ? 'none' : 'block';
+    grid.innerHTML = filtered.map(a => `
+      <a class="card" href="actor.html?id=${encodeURIComponent(a.id)}">
+        <div class="id-tag">${a.id}</div>
+        <div class="photo" style="${a.headshot ? `background-image:url('${a.headshot}')` : ''}">
+          ${a.headshot ? '' : 'No photo yet'}
+        </div>
+        <div class="info">
+          <h3>${a.name}</h3>
+          <div class="cat">${a.category || 'Actor'}</div>
+          <div class="lang">${a.languages || ''}</div>
+        </div>
+      </a>
+    `).join('');
+  }
+
+  document.getElementById('search').addEventListener('input', render);
+  loadActors();
+
+  new QRCode(document.getElementById('qr'), {
+    text: location.href.split('?')[0],
+    width: 84, height: 84,
+    colorDark: '#14110F', colorLight: '#F1ECE1'
+  });
+</script>
+</body>
+</html>

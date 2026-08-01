@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Actor Profile — Joelhood Pictures Limited</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,500&family=Work+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#14110F; --ink-2:#1C1813; --paper:#F1ECE1; --gold:#C9A24B;
+    --pine:#24352A; --graphite:#8C8579; --line:#33291E;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{background:var(--ink); color:var(--paper); font-family:'Work Sans',sans-serif; min-height:100vh;}
+  a{color:inherit;}
+  .wrap{max-width:960px; margin:0 auto; padding:0 28px;}
+  header.top{border-bottom:1px solid var(--line); padding:22px 0;}
+  .brand{font-family:'IBM Plex Mono',monospace; font-size:13px; letter-spacing:.12em; text-transform:uppercase; color:var(--gold);}
+  .back{font-family:'IBM Plex Mono',monospace; font-size:12px; color:var(--graphite); display:inline-block; margin:26px 0 0;}
+  .back:hover{color:var(--gold);}
+
+  .profile{display:grid; grid-template-columns:320px 1fr; gap:44px; padding:30px 0 60px;}
+  .photo{
+    width:100%; aspect-ratio:3/4; background:var(--pine) center/cover no-repeat; border-radius:3px;
+    border:1px solid var(--line); display:flex; align-items:center; justify-content:center;
+    color:var(--graphite); font-family:'IBM Plex Mono',monospace; font-size:12px;
+  }
+  .id-tag{font-family:'IBM Plex Mono',monospace; color:var(--gold); font-size:12px; letter-spacing:.08em; margin-bottom:10px;}
+  h1{font-family:'Fraunces',serif; font-weight:600; font-size:clamp(32px,5vw,48px); line-height:1.05;}
+  .meta{color:var(--graphite); font-size:14px; margin-top:8px;}
+  .bio{margin-top:22px; font-size:15.5px; line-height:1.7; max-width:560px;}
+  .section-label{font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--gold); margin:26px 0 8px;}
+  .credits{color:var(--paper); font-size:14.5px; line-height:1.7; max-width:560px; white-space:pre-line;}
+
+  .socials{display:flex; gap:10px; flex-wrap:wrap; margin-top:8px;}
+  .socials a{
+    border:1px solid var(--line); padding:8px 14px; font-family:'IBM Plex Mono',monospace;
+    font-size:12px; border-radius:2px; text-transform:uppercase; letter-spacing:.05em;
+  }
+  .socials a:hover{border-color:var(--gold); color:var(--gold);}
+
+  .enquire{
+    margin-top:34px; border:1px solid var(--gold); padding:18px 20px; border-radius:3px; background:var(--ink-2); max-width:420px;
+  }
+  .enquire .label{font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--gold); margin-bottom:6px;}
+  .enquire p{font-size:13.5px; color:var(--graphite); line-height:1.6; margin-bottom:12px;}
+  .enquire a.cta{
+    display:inline-block; background:var(--gold); color:var(--ink); font-weight:600; font-size:13.5px;
+    padding:10px 18px; border-radius:2px; font-family:'Work Sans',sans-serif;
+  }
+
+  footer{border-top:1px solid var(--line); padding:26px 0; color:var(--graphite); font-size:12.5px;}
+
+  @media(max-width:640px){ .profile{grid-template-columns:1fr;} }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap"><div class="brand">Joelhood Pictures <span style="color:var(--graphite)">· Talent Roster</span></div></div>
+</header>
+
+<div class="wrap">
+  <a class="back" href="index.html">← Back to roster</a>
+  <div class="profile" id="profile">
+    <div class="photo" id="photo">Loading…</div>
+    <div>
+      <div class="id-tag" id="idTag"></div>
+      <h1 id="name"></h1>
+      <div class="meta" id="meta"></div>
+      <p class="bio" id="bio"></p>
+      <div id="creditsWrap">
+        <div class="section-label">Credits & Experience</div>
+        <div class="credits" id="credits"></div>
+      </div>
+      <div class="section-label">Portfolio</div>
+      <div class="socials" id="socials"></div>
+
+      <div class="enquire">
+        <div class="label">Casting enquiries</div>
+        <p>All bookings and enquiries for this actor are handled directly by Joelhood Pictures Limited. Please contact the agency to initiate contact — not the actor.</p>
+        <a class="cta" href="mailto:joelhoodpictures@ymail.com?subject=Casting Enquiry — " id="enquireLink">Contact the agent</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer><div class="wrap">Joackim Joel Sakala ©2026. All Rights Reserved.</div></footer>
+
+<script>
+  // ⬇️ Paste your deployed Google Apps Script Web App URL here
+  const API_URL = 'https://script.google.com/macros/s/AKfycbyWISwWYBYFvXAMV_sU7clepOPLkosc6dbv1tUa-p-WobBKOvKmpjPlGDyONxF9HN0H/exec';
+
+  const params = new URLSearchParams(location.search);
+  const id = params.get('id');
+
+  async function load(){
+    if(!id){ document.getElementById('name').textContent = 'No actor specified.'; return; }
+    try{
+      const res = await fetch(API_URL + '?action=get&id=' + encodeURIComponent(id));
+      const data = await res.json();
+      if(!data.ok){ document.getElementById('name').textContent = 'Actor not found.'; return; }
+      render(data.actor);
+    }catch(err){
+      document.getElementById('name').textContent = 'Profile unavailable — check API_URL configuration.';
+    }
+  }
+
+  function render(a){
+    document.title = a.name + ' — Joelhood Pictures Limited';
+    document.getElementById('idTag').textContent = a.id;
+    document.getElementById('name').textContent = a.name;
+    document.getElementById('meta').textContent = [a.category, a.languages].filter(Boolean).join(' · ');
+    document.getElementById('bio').textContent = a.bio || '';
+    const photo = document.getElementById('photo');
+    if(a.headshot){ photo.style.backgroundImage = `url('${a.headshot}')`; photo.textContent=''; }
+    else { photo.textContent = 'No photo yet'; }
+
+    const creditsWrap = document.getElementById('creditsWrap');
+    if(a.experience){ document.getElementById('credits').textContent = a.experience; }
+    else { creditsWrap.style.display = 'none'; }
+
+    const socials = document.getElementById('socials');
+    const links = [
+      ['Instagram', a.instagram], ['Twitter / X', a.twitter], ['TikTok', a.tiktok],
+      ['YouTube', a.youtube], ['Facebook', a.facebook], ['Showreel', a.showreel]
+    ].filter(([, url]) => url);
+    socials.innerHTML = links.length
+      ? links.map(([label, url]) => `<a href="${url}" target="_blank" rel="noopener">${label}</a>`).join('')
+      : '<span style="color:var(--graphite); font-size:13px;">No links added yet.</span>';
+
+    const enquireLink = document.getElementById('enquireLink');
+    enquireLink.href = enquireLink.href.replace(/subject=.*/, 'subject=' + encodeURIComponent('Casting Enquiry — ' + a.name + ' (' + a.id + ')'));
+  }
+
+  load();
+</script>
+</body>
+</html>

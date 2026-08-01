@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Agent Console — Joelhood Pictures Limited</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600&family=Work+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#14110F; --ink-2:#1C1813; --paper:#F1ECE1; --gold:#C9A24B;
+    --pine:#24352A; --graphite:#8C8579; --line:#33291E; --danger:#B4553F;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{background:var(--ink); color:var(--paper); font-family:'Work Sans',sans-serif; min-height:100vh;}
+  .wrap{max-width:960px; margin:0 auto; padding:0 28px;}
+  header.top{border-bottom:1px solid var(--line); padding:22px 0;}
+  .brand{font-family:'IBM Plex Mono',monospace; font-size:13px; letter-spacing:.12em; text-transform:uppercase; color:var(--gold);}
+
+  .gate{max-width:360px; margin:120px auto; text-align:center;}
+  .gate h1{font-family:'Fraunces',serif; font-size:28px; margin-bottom:18px;}
+  input, textarea, select{
+    width:100%; background:var(--ink-2); border:1px solid var(--line); color:var(--paper);
+    padding:11px 14px; font-family:'Work Sans',sans-serif; font-size:14px; border-radius:2px; margin-bottom:10px;
+  }
+  input:focus, textarea:focus, select:focus{outline:none; border-color:var(--gold);}
+  button{
+    background:var(--gold); color:var(--ink); border:none; padding:11px 20px; font-weight:600;
+    font-family:'Work Sans',sans-serif; font-size:14px; border-radius:2px; cursor:pointer;
+  }
+  button:hover{opacity:.9;}
+  button.ghost{background:transparent; border:1px solid var(--line); color:var(--paper);}
+  button.danger{background:transparent; border:1px solid var(--danger); color:var(--danger);}
+  .msg{font-family:'IBM Plex Mono',monospace; font-size:12px; color:var(--graphite); margin-top:8px;}
+
+  #console{display:none;}
+  .panel{background:var(--ink-2); border:1px solid var(--line); border-radius:3px; padding:24px; margin:26px 0;}
+  .panel h2{font-family:'Fraunces',serif; font-size:20px; margin-bottom:16px;}
+  .row2{display:grid; grid-template-columns:1fr 1fr; gap:12px;}
+
+  table{width:100%; border-collapse:collapse; margin-top:10px;}
+  th, td{text-align:left; padding:10px 8px; border-bottom:1px solid var(--line); font-size:13.5px; vertical-align:top;}
+  th{font-family:'IBM Plex Mono',monospace; font-size:11px; text-transform:uppercase; letter-spacing:.05em; color:var(--graphite);}
+  td.id{font-family:'IBM Plex Mono',monospace; color:var(--gold); font-size:12px;}
+  .status-pill{font-family:'IBM Plex Mono',monospace; font-size:10.5px; padding:3px 8px; border-radius:10px; text-transform:uppercase;}
+  .status-pill.Active{background:rgba(120,160,110,.18); color:#8FBF7E;}
+  .status-pill.Hidden{background:rgba(180,85,63,.18); color:var(--danger);}
+  .actions{display:flex; gap:6px; flex-wrap:wrap;}
+  .actions button{padding:6px 10px; font-size:12px;}
+  .linkbox{font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--graphite); word-break:break-all; margin-top:4px;}
+  footer{border-top:1px solid var(--line); padding:26px 0; color:var(--graphite); font-size:12.5px;}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap"><div class="brand">Joelhood Pictures <span style="color:var(--graphite)">· Agent Console</span></div></div>
+</header>
+
+<div class="wrap">
+  <div class="gate" id="gate">
+    <h1>Agent login</h1>
+    <input type="password" id="pw" placeholder="Admin password">
+    <button style="width:100%" onclick="login()">Enter console</button>
+    <div class="msg" id="gateMsg"></div>
+  </div>
+
+  <div id="console">
+    <div class="panel">
+      <h2>Add an actor</h2>
+      <input id="f_name" placeholder="Full name">
+      <div class="row2">
+        <input id="f_category" placeholder="Category (e.g. Lead, Supporting, Voice)">
+        <input id="f_languages" placeholder="Languages spoken">
+      </div>
+      <textarea id="f_bio" rows="3" placeholder="Short bio"></textarea>
+      <textarea id="f_experience" rows="3" placeholder="Credits / experience (one per line)"></textarea>
+      <input id="f_showreel" placeholder="Showreel link (optional)">
+      <button onclick="addActor()">Add to roster</button>
+      <div class="msg" id="addMsg"></div>
+    </div>
+
+    <div class="panel">
+      <h2>Roster (<span id="rosterCount">0</span>)</h2>
+      <table>
+        <thead><tr><th>ID</th><th>Name</th><th>Status</th><th>Photo & socials</th><th>Manage</th></tr></thead>
+        <tbody id="rosterBody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<footer><div class="wrap">Joackim Joel Sakala ©2026. All Rights Reserved.</div></footer>
+
+<script>
+  // ⬇️ Paste your deployed Google Apps Script Web App URL here
+  const API_URL = 'https://script.google.com/macros/s/AKfycbyWISwWYBYFvXAMV_sU7clepOPLkosc6dbv1tUa-p-WobBKOvKmpjPlGDyONxF9HN0H/exec';
+  let PASSWORD = '';
+
+  async function api(body){
+    const res = await fetch(API_URL, {
+      method: 'POST',
+      headers: {'Content-Type':'text/plain;charset=utf-8'},
+      body: JSON.stringify(body)
+    });
+    return res.json();
+  }
+
+  async function login(){
+    PASSWORD = document.getElementById('pw').value;
+    const msg = document.getElementById('gateMsg');
+    msg.textContent = 'Checking…';
+    try{
+      const res = await fetch(API_URL + '?action=adminList&password=' + encodeURIComponent(PASSWORD));
+      const data = await res.json();
+      if(!data.ok){ msg.textContent = 'Incorrect password.'; return; }
+      document.getElementById('gate').style.display = 'none';
+      document.getElementById('console').style.display = 'block';
+      renderRoster(data.actors);
+    }catch(err){
+      msg.textContent = 'Could not reach the console — check API_URL configuration.';
+    }
+  }
+
+  async function refreshRoster(){
+    const res = await fetch(API_URL + '?action=adminList&password=' + encodeURIComponent(PASSWORD));
+    const data = await res.json();
+    if(data.ok) renderRoster(data.actors);
+  }
+
+  function renderRoster(actors){
+    document.getElementById('rosterCount').textContent = actors.length;
+    document.getElementById('rosterBody').innerHTML = actors.map(a => `
+      <tr>
+        <td class="id">${a.id}</td>
+        <td>${a.name}<div class="linkbox">${a.category || ''}</div></td>
+        <td><span class="status-pill ${a.status}">${a.status}</span></td>
+        <td>
+          ${a.headshot ? 'Photo uploaded' : 'No photo yet'}
+          <div class="linkbox">Private edit link:<br>${a.editLink}</div>
+        </td>
+        <td class="actions">
+          <button class="ghost" onclick="copyLink('${a.editLink}')">Copy link</button>
+          <button class="ghost" onclick="toggleStatus('${a.id}')">${a.status === 'Active' ? 'Hide' : 'Unhide'}</button>
+          <button class="danger" onclick="deleteActor('${a.id}','${a.name.replace(/'/g,"")}')">Delete</button>
+        </td>
+      </tr>
+    `).join('');
+  }
+
+  function copyLink(link){
+    navigator.clipboard.writeText(link);
+    alert('Edit link copied. Send this privately to the actor — it lets them upload their photo and social links only.');
+  }
+
+  async function addActor(){
+    const msg = document.getElementById('addMsg');
+    const name = document.getElementById('f_name').value.trim();
+    if(!name){ msg.textContent = 'Name is required.'; return; }
+    msg.textContent = 'Saving…';
+    const data = await api({
+      action: 'addActor', password: PASSWORD, name,
+      category: document.getElementById('f_category').value.trim(),
+      languages: document.getElementById('f_languages').value.trim(),
+      bio: document.getElementById('f_bio').value.trim(),
+      experience: document.getElementById('f_experience').value.trim(),
+      showreel: document.getElementById('f_showreel').value.trim()
+    });
+    if(!data.ok){ msg.textContent = 'Could not add actor.'; return; }
+    ['f_name','f_category','f_languages','f_bio','f_experience','f_showreel'].forEach(id => document.getElementById(id).value = '');
+    msg.textContent = `Added ${data.id}. Copy their private edit link from the table below and send it to them.`;
+    refreshRoster();
+  }
+
+  async function toggleStatus(id){
+    await api({ action:'toggleStatus', password: PASSWORD, id });
+    refreshRoster();
+  }
+
+  async function deleteActor(id, name){
+    if(!confirm(`Remove ${name} (${id}) from the roster? This cannot be undone.`)) return;
+    await api({ action:'deleteActor', password: PASSWORD, id });
+    refreshRoster();
+  }
+
+  document.getElementById('pw').addEventListener('keydown', e => { if(e.key === 'Enter') login(); });
+</script>
+</body>
+</html>
