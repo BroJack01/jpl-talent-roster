@@ -49,6 +49,17 @@
   .actions button{padding:6px 10px; font-size:12px;}
   .linkbox{font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--graphite); word-break:break-all; margin-top:4px;}
   footer{border-top:1px solid var(--line); padding:26px 0; color:var(--graphite); font-size:12.5px;}
+
+  .edit-overlay{
+    position:fixed; inset:0; background:rgba(20,17,15,.82); display:flex; align-items:center;
+    justify-content:center; padding:20px; z-index:50;
+  }
+  .edit-modal{
+    background:var(--ink-2); border:1px solid var(--gold); border-radius:3px; padding:26px;
+    max-width:480px; width:100%; max-height:88vh; overflow-y:auto;
+  }
+  .edit-modal h2{font-family:'Fraunces',serif; font-size:20px; margin-bottom:16px;}
+  .edit-modal #editIdLabel{color:var(--gold); font-family:'IBM Plex Mono',monospace; font-size:14px;}
 </style>
 </head>
 <body>
@@ -88,14 +99,34 @@
       </table>
     </div>
   </div>
+
+  <div id="editOverlay" class="edit-overlay" style="display:none;">
+    <div class="edit-modal">
+      <h2>Edit <span id="editIdLabel"></span></h2>
+      <input id="e_name" placeholder="Full name">
+      <div class="row2">
+        <input id="e_category" placeholder="Category">
+        <input id="e_languages" placeholder="Languages spoken">
+      </div>
+      <textarea id="e_bio" rows="3" placeholder="Short bio"></textarea>
+      <textarea id="e_experience" rows="3" placeholder="Credits / experience"></textarea>
+      <input id="e_showreel" placeholder="Showreel link">
+      <div style="display:flex; gap:10px; margin-top:6px;">
+        <button onclick="saveEdit()">Save changes</button>
+        <button class="ghost" onclick="closeEdit()">Cancel</button>
+      </div>
+      <div class="msg" id="editMsg"></div>
+    </div>
+  </div>
 </div>
 
 <footer><div class="wrap">Joackim Joel Sakala ©2026. All Rights Reserved.</div></footer>
 
 <script>
   // ⬇️ Paste your deployed Google Apps Script Web App URL here
-  const API_URL = 'https://script.google.com/macros/s/AKfycbyWISwWYBYFvXAMV_sU7clepOPLkosc6dbv1tUa-p-WobBKOvKmpjPlGDyONxF9HN0H/exec';
+  const API_URL = 'PASTE_YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE';
   let PASSWORD = '';
+  let ROSTER = [];
 
   async function api(body){
     const res = await fetch(API_URL, {
@@ -129,6 +160,7 @@
   }
 
   function renderRoster(actors){
+    ROSTER = actors;
     document.getElementById('rosterCount').textContent = actors.length;
     document.getElementById('rosterBody').innerHTML = actors.map(a => `
       <tr>
@@ -140,12 +172,50 @@
           <div class="linkbox">Private edit link:<br>${a.editLink}</div>
         </td>
         <td class="actions">
+          <button class="ghost" onclick="openEdit('${a.id}')">Edit</button>
           <button class="ghost" onclick="copyLink('${a.editLink}')">Copy link</button>
           <button class="ghost" onclick="toggleStatus('${a.id}')">${a.status === 'Active' ? 'Hide' : 'Unhide'}</button>
           <button class="danger" onclick="deleteActor('${a.id}','${a.name.replace(/'/g,"")}')">Delete</button>
         </td>
       </tr>
     `).join('');
+  }
+
+  function openEdit(id){
+    const a = ROSTER.find(x => x.id === id);
+    if(!a) return;
+    document.getElementById('editIdLabel').textContent = a.id;
+    document.getElementById('e_name').value = a.name || '';
+    document.getElementById('e_category').value = a.category || '';
+    document.getElementById('e_languages').value = a.languages || '';
+    document.getElementById('e_bio').value = a.bio || '';
+    document.getElementById('e_experience').value = a.experience || '';
+    document.getElementById('e_showreel').value = a.showreel || '';
+    document.getElementById('editMsg').textContent = '';
+    document.getElementById('editOverlay').dataset.id = id;
+    document.getElementById('editOverlay').style.display = 'flex';
+  }
+
+  function closeEdit(){
+    document.getElementById('editOverlay').style.display = 'none';
+  }
+
+  async function saveEdit(){
+    const id = document.getElementById('editOverlay').dataset.id;
+    const msg = document.getElementById('editMsg');
+    msg.textContent = 'Saving…';
+    const data = await api({
+      action: 'updateActorAdmin', password: PASSWORD, id,
+      name: document.getElementById('e_name').value.trim(),
+      category: document.getElementById('e_category').value.trim(),
+      languages: document.getElementById('e_languages').value.trim(),
+      bio: document.getElementById('e_bio').value.trim(),
+      experience: document.getElementById('e_experience').value.trim(),
+      showreel: document.getElementById('e_showreel').value.trim()
+    });
+    if(!data.ok){ msg.textContent = 'Could not save changes.'; return; }
+    closeEdit();
+    refreshRoster();
   }
 
   function copyLink(link){
