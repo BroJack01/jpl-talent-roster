@@ -9,11 +9,11 @@
 <style>
   :root{
     --ink:#14110F; --ink-2:#1C1813; --paper:#F1ECE1; --gold:#C9A24B;
-    --pine:#24352A; --graphite:#8C8579; --line:#33291E; --danger:#B4553F;
+    --pine:#24352A; --graphite:#8C8579; --line:#33291E; --danger:#B4553F; --ok:#8FBF7E;
   }
   *{box-sizing:border-box; margin:0; padding:0;}
   body{background:var(--ink); color:var(--paper); font-family:'Work Sans',sans-serif; min-height:100vh;}
-  .wrap{max-width:960px; margin:0 auto; padding:0 28px;}
+  .wrap{max-width:1020px; margin:0 auto; padding:0 28px;}
   header.top{border-bottom:1px solid var(--line); padding:22px 0;}
   .brand{font-family:'IBM Plex Mono',monospace; font-size:13px; letter-spacing:.12em; text-transform:uppercase; color:var(--gold);}
 
@@ -34,32 +34,48 @@
   .msg{font-family:'IBM Plex Mono',monospace; font-size:12px; color:var(--graphite); margin-top:8px;}
 
   #console{display:none;}
-  .panel{background:var(--ink-2); border:1px solid var(--line); border-radius:3px; padding:24px; margin:26px 0;}
+  .tabs{display:flex; gap:8px; margin:26px 0 0;}
+  .tabs button{background:transparent; border:1px solid var(--line); color:var(--graphite); padding:9px 16px; font-size:13px;}
+  .tabs button.active{background:var(--gold); color:var(--ink); border-color:var(--gold);}
+  .tabpanel{display:none;}
+  .tabpanel.active{display:block;}
+
+  .panel{background:var(--ink-2); border:1px solid var(--line); border-radius:3px; padding:24px; margin:20px 0;}
   .panel h2{font-family:'Fraunces',serif; font-size:20px; margin-bottom:16px;}
   .row2{display:grid; grid-template-columns:1fr 1fr; gap:12px;}
+  .row3{display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px;}
+  fieldset{border:1px solid var(--line); border-radius:3px; padding:14px 16px 4px; margin-bottom:14px;}
+  legend{font-family:'IBM Plex Mono',monospace; font-size:10.5px; text-transform:uppercase; letter-spacing:.06em; color:var(--gold); padding:0 6px;}
 
   table{width:100%; border-collapse:collapse; margin-top:10px;}
   th, td{text-align:left; padding:10px 8px; border-bottom:1px solid var(--line); font-size:13.5px; vertical-align:top;}
   th{font-family:'IBM Plex Mono',monospace; font-size:11px; text-transform:uppercase; letter-spacing:.05em; color:var(--graphite);}
   td.id{font-family:'IBM Plex Mono',monospace; color:var(--gold); font-size:12px;}
   .status-pill{font-family:'IBM Plex Mono',monospace; font-size:10.5px; padding:3px 8px; border-radius:10px; text-transform:uppercase;}
-  .status-pill.Active{background:rgba(120,160,110,.18); color:#8FBF7E;}
-  .status-pill.Hidden{background:rgba(180,85,63,.18); color:var(--danger);}
+  .status-pill.Active, .status-pill.Free, .status-pill.Approved{background:rgba(120,160,110,.18); color:var(--ok);}
+  .status-pill.Hidden, .status-pill.New{background:rgba(180,85,63,.18); color:var(--danger);}
+  .status-pill.Paid, .status-pill.Sent{background:rgba(201,162,75,.18); color:var(--gold);}
   .actions{display:flex; gap:6px; flex-wrap:wrap;}
   .actions button{padding:6px 10px; font-size:12px;}
   .linkbox{font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--graphite); word-break:break-all; margin-top:4px;}
   footer{border-top:1px solid var(--line); padding:26px 0; color:var(--graphite); font-size:12.5px;}
 
-  .edit-overlay{
-    position:fixed; inset:0; background:rgba(20,17,15,.82); display:flex; align-items:center;
-    justify-content:center; padding:20px; z-index:50;
+  .overlay{
+    position:fixed; inset:0; background:rgba(20,17,15,.85); display:flex; align-items:center;
+    justify-content:center; padding:20px; z-index:50; overflow-y:auto;
   }
-  .edit-modal{
+  .modal{
     background:var(--ink-2); border:1px solid var(--gold); border-radius:3px; padding:26px;
-    max-width:480px; width:100%; max-height:88vh; overflow-y:auto;
+    max-width:560px; width:100%; max-height:88vh; overflow-y:auto;
   }
-  .edit-modal h2{font-family:'Fraunces',serif; font-size:20px; margin-bottom:16px;}
-  .edit-modal #editIdLabel{color:var(--gold); font-family:'IBM Plex Mono',monospace; font-size:14px;}
+  .modal h2{font-family:'Fraunces',serif; font-size:20px; margin-bottom:16px;}
+  .modal .idlabel{color:var(--gold); font-family:'IBM Plex Mono',monospace; font-size:14px;}
+  .brief-summary{font-size:13px; color:var(--graphite); line-height:1.7; margin-bottom:14px; background:var(--ink); padding:12px 14px; border-radius:2px;}
+  .brief-summary b{color:var(--paper);}
+  .checklist{max-height:260px; overflow-y:auto; border:1px solid var(--line); border-radius:2px; padding:10px 14px; margin-bottom:14px;}
+  .checklist label{display:flex; align-items:center; gap:8px; font-size:13.5px; padding:6px 0; margin:0; border-bottom:1px solid var(--line);}
+  .checklist label:last-child{border-bottom:none;}
+  .checklist input{width:auto; margin:0;}
 </style>
 </head>
 <body>
@@ -77,45 +93,128 @@
   </div>
 
   <div id="console">
-    <div class="panel">
-      <h2>Add an actor</h2>
-      <input id="f_name" placeholder="Full name">
-      <div class="row2">
-        <input id="f_category" placeholder="Category (e.g. Lead, Supporting, Voice)">
-        <input id="f_languages" placeholder="Languages spoken">
-      </div>
-      <textarea id="f_bio" rows="3" placeholder="Short bio"></textarea>
-      <textarea id="f_experience" rows="3" placeholder="Credits / experience (one per line)"></textarea>
-      <input id="f_showreel" placeholder="Showreel link (optional)">
-      <button onclick="addActor()">Add to roster</button>
-      <div class="msg" id="addMsg"></div>
+    <div class="tabs">
+      <button class="active" id="tabBtnBriefs" onclick="showTab('briefs')">Casting Briefs</button>
+      <button id="tabBtnRoster" onclick="showTab('roster')">Roster</button>
     </div>
 
-    <div class="panel">
-      <h2>Roster (<span id="rosterCount">0</span>)</h2>
-      <table>
-        <thead><tr><th>ID</th><th>Name</th><th>Status</th><th>Photo & socials</th><th>Manage</th></tr></thead>
-        <tbody id="rosterBody"></tbody>
-      </table>
+    <div class="tabpanel active" id="tabBriefs">
+      <div class="panel">
+        <h2>Casting briefs (<span id="briefCount">0</span>)</h2>
+        <table>
+          <thead><tr><th>Brief</th><th>Producer</th><th>Role</th><th>Visit</th><th>Status</th><th>Manage</th></tr></thead>
+          <tbody id="briefsBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="tabpanel" id="tabRoster">
+      <div class="panel">
+        <h2>Add an actor</h2>
+        <fieldset><legend>Basics</legend>
+          <input id="f_name" placeholder="Full name">
+          <div class="row3">
+            <input id="f_gender" placeholder="Gender">
+            <input id="f_castingAge" placeholder="Casting age (number)">
+            <select id="f_admissionStatus">
+              <option value="Approved">Approved</option>
+              <option value="Not yet ready">Not yet ready</option>
+              <option value="Reassess later">Reassess later</option>
+            </select>
+          </div>
+          <div class="row2">
+            <input id="f_category" placeholder="Casting categories (comma-separated: Dramatic, Lead-capable...)">
+            <input id="f_languages" placeholder="Languages spoken">
+          </div>
+          <input id="f_accents" placeholder="Accents">
+        </fieldset>
+        <fieldset><legend>Physical</legend>
+          <div class="row3">
+            <input id="f_height" placeholder="Height">
+            <input id="f_bodyType" placeholder="Body type / build">
+            <input id="f_hair" placeholder="Hair">
+          </div>
+          <div class="row2">
+            <input id="f_eyeColour" placeholder="Eye colour">
+            <input id="f_distinguishingFeatures" placeholder="Distinguishing features">
+          </div>
+        </fieldset>
+        <fieldset><legend>Profile</legend>
+          <textarea id="f_bio" rows="3" placeholder="Short bio"></textarea>
+          <textarea id="f_experience" rows="3" placeholder="Credits / experience (one per line)"></textarea>
+          <input id="f_specialSkills" placeholder="Special skills">
+          <input id="f_showreel" placeholder="Showreel link (optional)">
+        </fieldset>
+        <button onclick="addActor()">Add to roster</button>
+        <div class="msg" id="addMsg"></div>
+      </div>
+
+      <div class="panel">
+        <h2>Roster (<span id="rosterCount">0</span>)</h2>
+        <table>
+          <thead><tr><th>ID</th><th>Name</th><th>Admission</th><th>Status</th><th>Photo & socials</th><th>Manage</th></tr></thead>
+          <tbody id="rosterBody"></tbody>
+        </table>
+      </div>
     </div>
   </div>
 
-  <div id="editOverlay" class="edit-overlay" style="display:none;">
-    <div class="edit-modal">
-      <h2>Edit <span id="editIdLabel"></span></h2>
-      <input id="e_name" placeholder="Full name">
-      <div class="row2">
-        <input id="e_category" placeholder="Category">
-        <input id="e_languages" placeholder="Languages spoken">
-      </div>
-      <textarea id="e_bio" rows="3" placeholder="Short bio"></textarea>
-      <textarea id="e_experience" rows="3" placeholder="Credits / experience"></textarea>
-      <input id="e_showreel" placeholder="Showreel link">
+  <div id="editOverlay" class="overlay" style="display:none;">
+    <div class="modal">
+      <h2>Edit <span id="editIdLabel" class="idlabel"></span></h2>
+      <fieldset><legend>Basics</legend>
+        <input id="e_name" placeholder="Full name">
+        <div class="row3">
+          <input id="e_gender" placeholder="Gender">
+          <input id="e_castingAge" placeholder="Casting age">
+          <select id="e_admissionStatus">
+            <option value="Approved">Approved</option>
+            <option value="Not yet ready">Not yet ready</option>
+            <option value="Reassess later">Reassess later</option>
+          </select>
+        </div>
+        <div class="row2">
+          <input id="e_category" placeholder="Casting categories">
+          <input id="e_languages" placeholder="Languages spoken">
+        </div>
+        <input id="e_accents" placeholder="Accents">
+      </fieldset>
+      <fieldset><legend>Physical</legend>
+        <div class="row3">
+          <input id="e_height" placeholder="Height">
+          <input id="e_bodyType" placeholder="Body type / build">
+          <input id="e_hair" placeholder="Hair">
+        </div>
+        <div class="row2">
+          <input id="e_eyeColour" placeholder="Eye colour">
+          <input id="e_distinguishingFeatures" placeholder="Distinguishing features">
+        </div>
+      </fieldset>
+      <fieldset><legend>Profile</legend>
+        <textarea id="e_bio" rows="3" placeholder="Short bio"></textarea>
+        <textarea id="e_experience" rows="3" placeholder="Credits / experience"></textarea>
+        <input id="e_specialSkills" placeholder="Special skills">
+        <input id="e_showreel" placeholder="Showreel link">
+      </fieldset>
       <div style="display:flex; gap:10px; margin-top:6px;">
         <button onclick="saveEdit()">Save changes</button>
         <button class="ghost" onclick="closeEdit()">Cancel</button>
       </div>
       <div class="msg" id="editMsg"></div>
+    </div>
+  </div>
+
+  <div id="briefOverlay" class="overlay" style="display:none;">
+    <div class="modal">
+      <h2>Brief <span id="briefIdLabel" class="idlabel"></span></h2>
+      <div class="brief-summary" id="briefSummary"></div>
+      <div class="msg" style="margin-bottom:8px;">Auto-matched shortlist — untick anyone who isn't right, tick anyone you want to add, then send.</div>
+      <div class="checklist" id="briefChecklist"></div>
+      <div style="display:flex; gap:10px;">
+        <button onclick="sendShortlist()">Approve & send to producer</button>
+        <button class="ghost" onclick="closeBrief()">Close</button>
+      </div>
+      <div class="msg" id="briefMsg"></div>
     </div>
   </div>
 </div>
@@ -127,14 +226,21 @@
   const API_URL = 'https://script.google.com/macros/s/AKfycbyWISwWYBYFvXAMV_sU7clepOPLkosc6dbv1tUa-p-WobBKOvKmpjPlGDyONxF9HN0H/exec';
   let PASSWORD = '';
   let ROSTER = [];
+  let BRIEFS = [];
+
+  const ACTOR_FIELDS = ['name','gender','castingAge','admissionStatus','category','languages','accents',
+    'height','bodyType','hair','eyeColour','distinguishingFeatures','bio','experience','specialSkills','showreel'];
 
   async function api(body){
-    const res = await fetch(API_URL, {
-      method: 'POST',
-      headers: {'Content-Type':'text/plain;charset=utf-8'},
-      body: JSON.stringify(body)
-    });
+    const res = await fetch(API_URL, { method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'}, body: JSON.stringify(body) });
     return res.json();
+  }
+
+  function showTab(name){
+    document.getElementById('tabBriefs').classList.toggle('active', name==='briefs');
+    document.getElementById('tabRoster').classList.toggle('active', name==='roster');
+    document.getElementById('tabBtnBriefs').classList.toggle('active', name==='briefs');
+    document.getElementById('tabBtnRoster').classList.toggle('active', name==='roster');
   }
 
   async function login(){
@@ -148,6 +254,7 @@
       document.getElementById('gate').style.display = 'none';
       document.getElementById('console').style.display = 'block';
       renderRoster(data.actors);
+      loadBriefs();
     }catch(err){
       msg.textContent = 'Could not reach the console — check API_URL configuration.';
     }
@@ -159,6 +266,12 @@
     if(data.ok) renderRoster(data.actors);
   }
 
+  async function loadBriefs(){
+    const res = await fetch(API_URL + '?action=adminListBriefs&password=' + encodeURIComponent(PASSWORD));
+    const data = await res.json();
+    if(data.ok) renderBriefs(data.briefs);
+  }
+
   function renderRoster(actors){
     ROSTER = actors;
     document.getElementById('rosterCount').textContent = actors.length;
@@ -168,6 +281,7 @@
       <tr>
         <td class="id">${a.id}</td>
         <td>${a.name}<div class="linkbox">${a.category || ''}</div></td>
+        <td><span class="status-pill ${a.admissionStatus === 'Approved' ? 'Approved' : 'New'}">${a.admissionStatus || 'Approved'}</span></td>
         <td><span class="status-pill ${a.status}">${a.status}</span></td>
         <td>
           ${a.headshot ? 'Photo uploaded' : 'No photo yet'}
@@ -184,38 +298,39 @@
     }).join('');
   }
 
+  function renderBriefs(briefs){
+    BRIEFS = briefs;
+    document.getElementById('briefCount').textContent = briefs.length;
+    document.getElementById('briefsBody').innerHTML = briefs.length ? briefs.map(b => `
+      <tr>
+        <td class="id">${b.briefID}<div class="linkbox">${b.productionTitle || ''}</div></td>
+        <td>${b.producerName || ''}<div class="linkbox">${b.companyName || ''}</div></td>
+        <td>${b.characterName || ''}<div class="linkbox">${b.ageRange || ''} · ${b.roleGender || ''}</div></td>
+        <td><span class="status-pill ${b.pricingTier}">${b.pricingTier}</span><div class="linkbox">Visit ${b.visitNumber}</div></td>
+        <td><span class="status-pill ${b.status}">${b.status}</span></td>
+        <td class="actions"><button class="ghost" onclick="openBrief('${b.briefID}')">Review</button></td>
+      </tr>
+    `).join('') : `<tr><td colspan="6" style="color:var(--graphite);">No casting briefs yet.</td></tr>`;
+  }
+
   function openEdit(id){
     const a = ROSTER.find(x => x.id === id);
     if(!a) return;
     document.getElementById('editIdLabel').textContent = a.id;
-    document.getElementById('e_name').value = a.name || '';
-    document.getElementById('e_category').value = a.category || '';
-    document.getElementById('e_languages').value = a.languages || '';
-    document.getElementById('e_bio').value = a.bio || '';
-    document.getElementById('e_experience').value = a.experience || '';
-    document.getElementById('e_showreel').value = a.showreel || '';
+    ACTOR_FIELDS.forEach(f => { const el = document.getElementById('e_' + f); if(el) el.value = a[f] || (f==='admissionStatus' ? 'Approved' : ''); });
     document.getElementById('editMsg').textContent = '';
     document.getElementById('editOverlay').dataset.id = id;
     document.getElementById('editOverlay').style.display = 'flex';
   }
-
-  function closeEdit(){
-    document.getElementById('editOverlay').style.display = 'none';
-  }
+  function closeEdit(){ document.getElementById('editOverlay').style.display = 'none'; }
 
   async function saveEdit(){
     const id = document.getElementById('editOverlay').dataset.id;
     const msg = document.getElementById('editMsg');
     msg.textContent = 'Saving…';
-    const data = await api({
-      action: 'updateActorAdmin', password: PASSWORD, id,
-      name: document.getElementById('e_name').value.trim(),
-      category: document.getElementById('e_category').value.trim(),
-      languages: document.getElementById('e_languages').value.trim(),
-      bio: document.getElementById('e_bio').value.trim(),
-      experience: document.getElementById('e_experience').value.trim(),
-      showreel: document.getElementById('e_showreel').value.trim()
-    });
+    const body = { action:'updateActorAdmin', password: PASSWORD, id };
+    ACTOR_FIELDS.forEach(f => body[f] = document.getElementById('e_' + f).value.trim());
+    const data = await api(body);
     if(!data.ok){ msg.textContent = 'Could not save changes.'; return; }
     closeEdit();
     refreshRoster();
@@ -231,29 +346,57 @@
     const name = document.getElementById('f_name').value.trim();
     if(!name){ msg.textContent = 'Name is required.'; return; }
     msg.textContent = 'Saving…';
-    const data = await api({
-      action: 'addActor', password: PASSWORD, name,
-      category: document.getElementById('f_category').value.trim(),
-      languages: document.getElementById('f_languages').value.trim(),
-      bio: document.getElementById('f_bio').value.trim(),
-      experience: document.getElementById('f_experience').value.trim(),
-      showreel: document.getElementById('f_showreel').value.trim()
-    });
+    const body = { action:'addActor', password: PASSWORD };
+    ACTOR_FIELDS.forEach(f => body[f] = document.getElementById('f_' + f).value.trim());
+    const data = await api(body);
     if(!data.ok){ msg.textContent = 'Could not add actor.'; return; }
-    ['f_name','f_category','f_languages','f_bio','f_experience','f_showreel'].forEach(id => document.getElementById(id).value = '');
+    ACTOR_FIELDS.forEach(f => { const el = document.getElementById('f_' + f); if(el && el.tagName !== 'SELECT') el.value = ''; });
     msg.textContent = `Added ${data.id}. Copy their private edit link from the table below and send it to them.`;
     refreshRoster();
   }
 
-  async function toggleStatus(id){
-    await api({ action:'toggleStatus', password: PASSWORD, id });
-    refreshRoster();
-  }
+  async function toggleStatus(id){ await api({ action:'toggleStatus', password: PASSWORD, id }); refreshRoster(); }
 
   async function deleteActor(id, name){
     if(!confirm(`Remove ${name} (${id}) from the roster? This cannot be undone.`)) return;
     await api({ action:'deleteActor', password: PASSWORD, id });
     refreshRoster();
+  }
+
+  function openBrief(briefId){
+    const b = BRIEFS.find(x => x.briefID === briefId);
+    if(!b) return;
+    document.getElementById('briefIdLabel').textContent = b.briefID;
+    document.getElementById('briefSummary').innerHTML = `
+      <b>${b.producerName || ''}</b> — ${b.companyName || ''} (${b.producerEmail || ''})<br>
+      ${b.country || '—'}${b.taxPin ? ' · TPIN: ' + b.taxPin : ''}<br>
+      Production: <b>${b.productionTitle || '—'}</b> · ${b.productionType || ''} · ${b.location || ''}<br>
+      Role: <b>${b.characterName || '—'}</b>, ${b.ageRange || ''}, ${b.roleGender || ''}<br>
+      Description: ${b.characterDescription || '—'}<br>
+      Language/Accent: ${b.language || '—'} / ${b.accent || '—'}<br>
+      Shoot dates: ${b.shootDates || '—'} · Days: ${b.numberOfDays || '—'} · Compensation: ${b.compensation || '—'}
+    `;
+    const shortlist = (b.shortlistIDs || '').split(',').filter(Boolean);
+    document.getElementById('briefChecklist').innerHTML = ROSTER
+      .filter(a => a.status === 'Active' && a.admissionStatus === 'Approved')
+      .map(a => `<label><input type="checkbox" value="${a.id}" ${shortlist.includes(a.id) ? 'checked' : ''}> ${a.name} (${a.id}) — ${a.category || ''}</label>`)
+      .join('');
+    document.getElementById('briefMsg').textContent = '';
+    document.getElementById('briefOverlay').dataset.id = briefId;
+    document.getElementById('briefOverlay').style.display = 'flex';
+  }
+  function closeBrief(){ document.getElementById('briefOverlay').style.display = 'none'; }
+
+  async function sendShortlist(){
+    const briefId = document.getElementById('briefOverlay').dataset.id;
+    const checked = Array.from(document.querySelectorAll('#briefChecklist input:checked')).map(el => el.value);
+    const msg = document.getElementById('briefMsg');
+    msg.textContent = 'Sending…';
+    const data = await api({ action:'adminSendShortlist', password: PASSWORD, briefId, actorIds: checked });
+    if(!data.ok){ msg.textContent = 'Could not send — try again.'; return; }
+    msg.textContent = 'Shortlist sent to the producer.';
+    loadBriefs();
+    setTimeout(closeBrief, 1200);
   }
 
   document.getElementById('pw').addEventListener('keydown', e => { if(e.key === 'Enter') login(); });

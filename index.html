@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Talent Roster — Joelhood Pictures Limited</title>
-<meta name="description" content="The official talent roster of Joelhood Pictures Limited. Browse professional actors represented by JPL.">
+<title>JPL Casting Service — Joelhood Pictures Limited</title>
+<meta name="description" content="Joelhood Pictures Limited's curated casting service. Submit a casting brief and receive a shortlist of professionally trained actors.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,500&family=Work+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
@@ -14,113 +14,181 @@
     --pine:#24352A; --graphite:#8C8579; --line:#33291E;
   }
   *{box-sizing:border-box; margin:0; padding:0;}
-  body{
-    background:var(--ink); color:var(--paper);
-    font-family:'Work Sans',sans-serif; font-size:16px; line-height:1.5;
-    min-height:100vh;
-  }
+  body{background:var(--ink); color:var(--paper); font-family:'Work Sans',sans-serif; font-size:16px; line-height:1.5; min-height:100vh;}
   a{color:inherit; text-decoration:none;}
-  .wrap{max-width:1120px; margin:0 auto; padding:0 28px;}
+  .wrap{max-width:900px; margin:0 auto; padding:0 28px;}
 
   header.top{border-bottom:1px solid var(--line); padding:22px 0;}
   .top .wrap{display:flex; justify-content:space-between; align-items:center; gap:16px; flex-wrap:wrap;}
   .brand{font-family:'IBM Plex Mono',monospace; font-size:13px; letter-spacing:.12em; text-transform:uppercase; color:var(--gold);}
   .brand span{color:var(--graphite);}
-  nav a{font-family:'IBM Plex Mono',monospace; font-size:12px; letter-spacing:.08em; text-transform:uppercase; color:var(--graphite); border-bottom:1px solid transparent;}
-  nav a:hover{color:var(--paper); border-color:var(--gold);}
+  nav a{font-family:'IBM Plex Mono',monospace; font-size:12px; letter-spacing:.08em; text-transform:uppercase; color:var(--graphite);}
+  nav a:hover{color:var(--paper);}
 
-  .hero{padding:64px 0 40px; border-bottom:1px solid var(--line);}
-  .hero h1{
-    font-family:'Fraunces',serif; font-weight:600; font-style:italic;
-    font-size:clamp(38px,6vw,64px); line-height:1.05; max-width:780px;
-  }
-  .hero p{color:var(--graphite); max-width:520px; margin-top:16px; font-size:16px;}
-  .hero .count{font-family:'IBM Plex Mono',monospace; color:var(--gold); font-size:13px; margin-top:22px; letter-spacing:.05em;}
-  .hero-bottom{display:flex; justify-content:space-between; align-items:flex-end; flex-wrap:wrap; gap:24px; margin-top:30px;}
-  .stamp{display:inline-flex; gap:14px; align-items:center; border:1px solid var(--gold); padding:12px 16px; border-radius:3px; background:var(--ink-2);}
-  .stamp #qr{background:var(--paper); padding:5px; border-radius:2px; line-height:0;}
-  .stamp .stamp-copy{font-family:'IBM Plex Mono',monospace; font-size:10.5px; color:var(--graphite); max-width:150px; line-height:1.5;}
+  .hero{padding:64px 0 20px;}
+  .hero h1{font-family:'Fraunces',serif; font-weight:600; font-style:italic; font-size:clamp(34px,5.5vw,56px); line-height:1.08; max-width:680px;}
+  .hero p{color:var(--graphite); max-width:560px; margin-top:16px; font-size:16px;}
+  .hero .stamp{display:inline-flex; gap:14px; align-items:center; border:1px solid var(--gold); padding:12px 16px; border-radius:3px; background:var(--ink-2); margin-top:26px;}
+  .hero .stamp #qr{background:var(--paper); padding:5px; border-radius:2px; line-height:0;}
+  .hero .stamp .stamp-copy{font-family:'IBM Plex Mono',monospace; font-size:10.5px; color:var(--graphite); max-width:170px; line-height:1.5;}
 
-  .controls{padding:28px 0; display:flex; gap:14px; flex-wrap:wrap; align-items:center; border-bottom:1px solid var(--line);}
-  .search{
-    flex:1; min-width:220px; background:var(--ink-2); border:1px solid var(--line);
-    color:var(--paper); padding:12px 16px; font-family:'Work Sans',sans-serif; font-size:14px; border-radius:2px;
-  }
-  .search::placeholder{color:var(--graphite);}
-  .search:focus{outline:none; border-color:var(--gold);}
-  .filters{display:flex; gap:8px; flex-wrap:wrap;}
-  .filters button{
-    background:transparent; border:1px solid var(--line); color:var(--graphite);
-    padding:9px 14px; font-family:'IBM Plex Mono',monospace; font-size:12px; letter-spacing:.05em;
-    text-transform:uppercase; cursor:pointer; border-radius:2px; transition:.15s;
-  }
-  .filters button:hover{border-color:var(--gold); color:var(--paper);}
-  .filters button.active{background:var(--gold); border-color:var(--gold); color:var(--ink); font-weight:600;}
+  .how{padding:40px 0; border-top:1px solid var(--line); display:grid; grid-template-columns:repeat(3,1fr); gap:20px;}
+  .how div{background:var(--ink-2); border:1px solid var(--line); border-radius:3px; padding:18px 20px;}
+  .how .n{font-family:'IBM Plex Mono',monospace; color:var(--gold); font-size:12px; margin-bottom:8px;}
+  .how h3{font-family:'Fraunces',serif; font-size:17px; margin-bottom:6px;}
+  .how p{color:var(--graphite); font-size:13.5px; line-height:1.55;}
 
-  .grid{padding:40px 0 80px; display:grid; grid-template-columns:repeat(auto-fill,minmax(230px,1fr)); gap:22px;}
-  .card{
-    background:var(--ink-2); border:1px solid var(--line); border-radius:3px; overflow:hidden;
-    cursor:pointer; transition:.2s; position:relative;
-  }
-  .card:hover{border-color:var(--gold); transform:translateY(-2px);}
-  .card .photo{
-    width:100%; aspect-ratio:3/4; background:var(--pine) center/cover no-repeat;
-    display:flex; align-items:center; justify-content:center; color:var(--graphite);
-    font-family:'IBM Plex Mono',monospace; font-size:11px;
-  }
-  .card .id-tag{
-    position:absolute; top:10px; left:10px; background:rgba(20,17,15,.75); border:1px solid var(--gold);
-    color:var(--gold); font-family:'IBM Plex Mono',monospace; font-size:10px; padding:3px 7px; letter-spacing:.05em; border-radius:2px;
-  }
-  .card .info{padding:14px 16px 18px;}
-  .card .info h3{font-family:'Fraunces',serif; font-weight:600; font-size:19px; margin-bottom:4px;}
-  .card .info .cat{font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--gold); letter-spacing:.05em; text-transform:uppercase;}
-  .card .info .lang{color:var(--graphite); font-size:12.5px; margin-top:6px;}
+  .pricing{padding:40px 0; border-top:1px solid var(--line);}
+  .pricing h2{font-family:'Fraunces',serif; font-size:24px; margin-bottom:6px;}
+  .pricing > p{color:var(--graphite); font-size:14px; margin-bottom:20px;}
+  .tiers{display:grid; grid-template-columns:repeat(3,1fr); gap:16px;}
+  .tier{border:1px solid var(--line); background:var(--ink-2); border-radius:3px; padding:18px;}
+  .tier.free{border-color:var(--gold);}
+  .tier .visit{font-family:'IBM Plex Mono',monospace; font-size:11px; text-transform:uppercase; letter-spacing:.05em; color:var(--gold);}
+  .tier .price{font-family:'Fraunces',serif; font-size:22px; margin:6px 0;}
+  .tier p{color:var(--graphite); font-size:12.5px; line-height:1.5;}
 
-  .empty{padding:60px 0; text-align:center; color:var(--graphite); font-family:'IBM Plex Mono',monospace; font-size:13px;}
+  .form-section{padding:44px 0 70px; border-top:1px solid var(--line);}
+  .form-section h2{font-family:'Fraunces',serif; font-size:26px; margin-bottom:6px;}
+  .form-section > p{color:var(--graphite); font-size:14px; margin-bottom:26px;}
+  fieldset{border:1px solid var(--line); border-radius:3px; padding:18px 20px 20px; margin-bottom:18px;}
+  legend{font-family:'IBM Plex Mono',monospace; font-size:11px; text-transform:uppercase; letter-spacing:.08em; color:var(--gold); padding:0 8px;}
+  .row2{display:grid; grid-template-columns:1fr 1fr; gap:12px;}
+  label{display:block; font-size:12.5px; color:var(--graphite); margin:12px 0 5px;}
+  label:first-of-type{margin-top:0;}
+  input, textarea, select{
+    width:100%; background:var(--ink); border:1px solid var(--line); color:var(--paper);
+    padding:10px 13px; font-family:'Work Sans',sans-serif; font-size:14px; border-radius:2px;
+  }
+  input:focus, textarea:focus, select:focus{outline:none; border-color:var(--gold);}
+  button{
+    background:var(--gold); color:var(--ink); border:none; padding:13px 26px; font-weight:600;
+    font-family:'Work Sans',sans-serif; font-size:14.5px; border-radius:2px; cursor:pointer; margin-top:8px;
+  }
+  button:disabled{opacity:.5;}
+  .msg{font-family:'IBM Plex Mono',monospace; font-size:12.5px; color:var(--graphite); margin-top:12px;}
 
-  footer{border-top:1px solid var(--line); padding:30px 0; color:var(--graphite); font-size:12.5px; display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px;}
-  footer a{color:var(--gold);}
+  footer{border-top:1px solid var(--line); padding:26px 0; color:var(--graphite); font-size:12.5px; display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px;}
 
-  @media(max-width:520px){ .top .wrap{flex-direction:column; align-items:flex-start;} }
+  @media(max-width:700px){ .how{grid-template-columns:1fr;} .tiers{grid-template-columns:1fr;} .row2{grid-template-columns:1fr;} }
 </style>
 </head>
 <body>
 
 <header class="top">
   <div class="wrap">
-    <div class="brand">Joelhood Pictures <span>· Talent Roster</span></div>
+    <div class="brand">Joelhood Pictures <span>· Casting Service</span></div>
     <nav><a href="admin.html">Agent Login</a></nav>
   </div>
 </header>
 
 <section class="hero">
   <div class="wrap">
-    <h1>Actors, on record.</h1>
-    <p>The official talent roster of Joelhood Pictures Limited. Every profile here is verified and managed directly by JPL — built for producers and directors casting anywhere in the world. All casting enquiries are handled through the agency.</p>
-    <div class="hero-bottom">
-      <div class="count" id="count">Loading roster…</div>
-      <div class="stamp">
-        <div id="qr"></div>
-        <div class="stamp-copy">One code, the whole roster. Scan to browse — for print, cards, and casting sheets.</div>
-      </div>
+    <h1>Need trained actors for your next production?</h1>
+    <p>JPL maintains a curated roster of performers who have completed the Acting Mastery Course or whose training has been independently verified. Send us your casting brief. We identify actors from our roster whose profiles and ability best fit your requirements.</p>
+    <div class="stamp">
+      <div id="qr"></div>
+      <div class="stamp-copy">Scan to reach this page — for print, cards, and casting sheets.</div>
     </div>
   </div>
 </section>
 
-<div class="wrap">
-  <div class="controls">
-    <input class="search" id="search" type="text" placeholder="Search by name or language…">
-    <div class="filters" id="filters"></div>
+<section class="how">
+  <div class="wrap" style="display:contents;">
+    <div><div class="n">01</div><h3>Submit a brief</h3><p>Tell us the role, the production, and what you need. Takes a few minutes.</p></div>
+    <div><div class="n">02</div><h3>We shortlist</h3><p>We match your brief against verified, admitted actors on the roster.</p></div>
+    <div><div class="n">03</div><h3>You receive profiles</h3><p>A curated shortlist lands in your inbox — you audition and contract directly.</p></div>
   </div>
-  <div class="grid" id="grid"></div>
-  <div class="empty" id="empty" style="display:none;">No actors match that search.</div>
-</div>
+</section>
+
+<section class="pricing">
+  <div class="wrap">
+    <h2>Pricing</h2>
+    <p>We track requests by email and company name. Your first two casting briefs are free — from your third onward, a casting fee applies.</p>
+    <div class="tiers">
+      <div class="tier free"><div class="visit">First request</div><div class="price">Free</div><p>No cost. See what the roster can do.</p></div>
+      <div class="tier free"><div class="visit">Second request</div><div class="price">Free</div><p>Still free — we want the relationship, not just the fee.</p></div>
+      <div class="tier"><div class="visit">Third request onward</div><div class="price">Paid</div><p>A casting fee applies. We'll confirm pricing with you directly before we proceed.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="form-section">
+  <div class="wrap">
+    <h2>Submit a casting brief</h2>
+    <p>The more detail you give us, the sharper the shortlist.</p>
+    <form id="briefForm" onsubmit="return false;">
+      <fieldset>
+        <legend>Your details</legend>
+        <label>Your name</label><input id="producerName" required>
+        <div class="row2">
+          <div><label>Email</label><input id="producerEmail" type="email" required></div>
+          <div><label>Company / production house</label><input id="companyName" required></div>
+        </div>
+        <div class="row2">
+          <div>
+            <label>Company's country</label>
+            <select id="country" onchange="toggleTpin()">
+              <option value="Zambia">Zambia</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+          <div id="tpinWrap">
+            <label id="tpinLabel">ZRA TPIN</label>
+            <input id="taxPin" placeholder="10-digit numeric TPIN">
+          </div>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>Production</legend>
+        <label>Production title</label><input id="productionTitle">
+        <div class="row2">
+          <div><label>Director</label><input id="director"></div>
+          <div><label>Contact person (if different)</label><input id="contactPerson"></div>
+        </div>
+        <div class="row2">
+          <div><label>Type</label><input id="productionType" placeholder="Film / TV / short film / commercial / theatre"></div>
+          <div><label>Shoot dates</label><input id="shootDates"></div>
+        </div>
+        <div class="row2">
+          <div><label>Location</label><input id="location"></div>
+          <div><label>Number of shooting days</label><input id="numberOfDays"></div>
+        </div>
+        <div class="row2">
+          <div><label>Compensation</label><input id="compensation"></div>
+          <div><label>Application deadline</label><input id="deadline" type="date"></div>
+        </div>
+        <label>Audition requirements</label><textarea id="auditionRequirements" rows="2"></textarea>
+      </fieldset>
+
+      <fieldset>
+        <legend>The role</legend>
+        <div class="row2">
+          <div><label>Character name</label><input id="characterName"></div>
+          <div><label>Age range</label><input id="ageRange" placeholder="e.g. 40-50"></div>
+        </div>
+        <label>Gender</label><input id="roleGender" placeholder="e.g. Male, Female, Any">
+        <label>Character description</label><textarea id="characterDescription" rows="3"></textarea>
+        <div class="row2">
+          <div><label>Language</label><input id="language"></div>
+          <div><label>Accent</label><input id="accent"></div>
+        </div>
+        <label>Physical requirements</label><input id="physicalRequirements">
+        <label>Acting requirements</label><textarea id="actingRequirements" rows="2"></textarea>
+        <label>Special skills needed</label><input id="specialSkillsNeeded">
+      </fieldset>
+
+      <button onclick="submitBrief()">Submit brief</button>
+      <div class="msg" id="msg"></div>
+    </form>
+  </div>
+</section>
 
 <footer>
   <div class="wrap" style="display:flex; justify-content:space-between; width:100%; flex-wrap:wrap; gap:10px;">
     <span>Joackim Joel Sakala ©2026. All Rights Reserved.</span>
-    <span>Represented by Joelhood Pictures Limited</span>
+    <span>Joelhood Pictures Limited</span>
   </div>
 </footer>
 
@@ -128,65 +196,44 @@
   // ⬇️ Paste your deployed Google Apps Script Web App URL here
   const API_URL = 'https://script.google.com/macros/s/AKfycbyWISwWYBYFvXAMV_sU7clepOPLkosc6dbv1tUa-p-WobBKOvKmpjPlGDyONxF9HN0H/exec';
 
-  let ACTORS = [];
-  let activeCategory = 'All';
+  function toggleTpin(){
+    const isZambia = document.getElementById('country').value === 'Zambia';
+    document.getElementById('tpinLabel').textContent = isZambia ? 'ZRA TPIN' : 'Business registration number (if any)';
+    document.getElementById('taxPin').placeholder = isZambia ? '10-digit numeric TPIN' : 'Optional';
+  }
 
-  async function loadActors(){
+  async function submitBrief(){
+    const btn = document.querySelector('#briefForm button');
+    const msg = document.getElementById('msg');
+    const required = ['producerName','producerEmail','companyName'];
+    for (const id of required){
+      if (!document.getElementById(id).value.trim()){ msg.textContent = 'Please fill in your name, email, and company.'; return; }
+    }
+    const isZambia = document.getElementById('country').value === 'Zambia';
+    const taxPin = document.getElementById('taxPin').value.trim();
+    if (isZambia && !taxPin){ msg.textContent = 'ZRA TPIN is required for Zambian companies.'; return; }
+    if (isZambia && !/^\d{8,12}$/.test(taxPin)){ msg.textContent = 'ZRA TPIN should be numeric only.'; return; }
+    btn.disabled = true; msg.textContent = 'Submitting…';
+    const fields = ['producerName','producerEmail','companyName','country','taxPin','productionTitle','director','contactPerson',
+      'productionType','shootDates','location','numberOfDays','compensation','deadline','auditionRequirements',
+      'characterName','ageRange','roleGender','characterDescription','language','accent','physicalRequirements',
+      'actingRequirements','specialSkillsNeeded'];
+    const body = { action:'submitBrief' };
+    fields.forEach(f => body[f] = document.getElementById(f).value.trim());
     try{
-      const res = await fetch(API_URL + '?action=list');
+      const res = await fetch(API_URL, { method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'}, body: JSON.stringify(body) });
       const data = await res.json();
-      if(!data.ok){ document.getElementById('count').textContent = 'Unable to load roster.'; return; }
-      ACTORS = data.actors;
-      buildFilters();
-      render();
+      if (!data.ok){ msg.textContent = data.error || 'Something went wrong — please try again.'; btn.disabled = false; return; }
+      document.getElementById('briefForm').style.display = 'none';
+      msg.style.color = 'var(--gold)';
+      msg.textContent = data.pricingTier === 'Free'
+        ? `Brief received (${data.briefId}). This is a free request — we'll be in touch with a shortlist shortly.`
+        : `Brief received (${data.briefId}). This is a paid request — we'll confirm pricing with you before proceeding.`;
     }catch(err){
-      document.getElementById('count').textContent = 'Roster unavailable — check API_URL configuration.';
+      msg.textContent = 'Could not submit — check your connection and try again.';
+      btn.disabled = false;
     }
   }
-
-  function buildFilters(){
-    const cats = ['All', ...new Set(ACTORS.map(a => a.category).filter(Boolean))];
-    const el = document.getElementById('filters');
-    el.innerHTML = cats.map(c =>
-      `<button data-cat="${c}" class="${c===activeCategory?'active':''}">${c}</button>`
-    ).join('');
-    el.querySelectorAll('button').forEach(btn=>{
-      btn.addEventListener('click', ()=>{
-        activeCategory = btn.dataset.cat;
-        el.querySelectorAll('button').forEach(b=>b.classList.remove('active'));
-        btn.classList.add('active');
-        render();
-      });
-    });
-  }
-
-  function render(){
-    const q = document.getElementById('search').value.trim().toLowerCase();
-    const filtered = ACTORS.filter(a=>{
-      const matchesCat = activeCategory === 'All' || a.category === activeCategory;
-      const matchesQ = !q || a.name.toLowerCase().includes(q) || (a.languages||'').toLowerCase().includes(q);
-      return matchesCat && matchesQ;
-    });
-    document.getElementById('count').textContent = `${ACTORS.length} actor${ACTORS.length===1?'':'s'} on the roster`;
-    const grid = document.getElementById('grid');
-    document.getElementById('empty').style.display = filtered.length ? 'none' : 'block';
-    grid.innerHTML = filtered.map(a => `
-      <a class="card" href="actor.html?id=${encodeURIComponent(a.id)}">
-        <div class="id-tag">${a.id}</div>
-        <div class="photo" style="${a.headshot ? `background-image:url('${a.headshot}')` : ''}">
-          ${a.headshot ? '' : 'No photo yet'}
-        </div>
-        <div class="info">
-          <h3>${a.name}</h3>
-          <div class="cat">${a.category || 'Actor'}</div>
-          <div class="lang">${a.languages || ''}</div>
-        </div>
-      </a>
-    `).join('');
-  }
-
-  document.getElementById('search').addEventListener('input', render);
-  loadActors();
 
   new QRCode(document.getElementById('qr'), {
     text: location.href.split('?')[0],

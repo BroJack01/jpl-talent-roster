@@ -32,6 +32,9 @@
   .bio{margin-top:22px; font-size:15.5px; line-height:1.7; max-width:560px;}
   .section-label{font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--gold); margin:26px 0 8px;}
   .credits{color:var(--paper); font-size:14.5px; line-height:1.7; max-width:560px; white-space:pre-line;}
+  .details{display:grid; grid-template-columns:repeat(2,1fr); gap:6px 20px; max-width:560px;}
+  .details div{font-size:13.5px; color:var(--graphite);}
+  .details div b{color:var(--paper); font-weight:500;}
 
   .socials{display:flex; gap:10px; flex-wrap:wrap; margin-top:8px;}
   .socials a{
@@ -63,7 +66,7 @@
 </header>
 
 <div class="wrap">
-  <a class="back" href="index.html">← Back to roster</a>
+  <a class="back" href="index.html">← Back to JPL Casting</a>
   <div class="profile" id="profile">
     <div class="photo" id="photo">Loading…</div>
     <div>
@@ -71,6 +74,12 @@
       <h1 id="name"></h1>
       <div class="meta" id="meta"></div>
       <p class="bio" id="bio"></p>
+
+      <div id="detailsWrap">
+        <div class="section-label">Casting Details</div>
+        <div class="details" id="details"></div>
+      </div>
+
       <div id="creditsWrap">
         <div class="section-label">Credits & Experience</div>
         <div class="credits" id="credits"></div>
@@ -118,6 +127,17 @@
     const photo = document.getElementById('photo');
     if(a.headshot){ photo.style.backgroundImage = `url('${a.headshot}')`; photo.textContent=''; }
     else { photo.textContent = 'No photo yet'; }
+
+    const detailsWrap = document.getElementById('detailsWrap');
+    const detailFields = [
+      ['Gender', a.gender], ['Casting age', a.castingAge], ['Height', a.height],
+      ['Build', a.bodyType], ['Hair', a.hair], ['Eyes', a.eyeColour],
+      ['Accents', a.accents], ['Distinguishing features', a.distinguishingFeatures],
+      ['Special skills', a.specialSkills]
+    ].filter(([, v]) => v);
+    if(detailFields.length){
+      document.getElementById('details').innerHTML = detailFields.map(([label, v]) => `<div><b>${label}:</b> ${v}</div>`).join('');
+    } else { detailsWrap.style.display = 'none'; }
 
     const creditsWrap = document.getElementById('creditsWrap');
     if(a.experience){ document.getElementById('credits').textContent = a.experience; }
