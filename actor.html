@@ -105,17 +105,31 @@
 
   const params = new URLSearchParams(location.search);
   const id = params.get('id');
+  const previewPw = params.get('pw');
 
   async function load(){
     if(!id){ document.getElementById('name').textContent = 'No actor specified.'; return; }
     try{
-      const res = await fetch(API_URL + '?action=get&id=' + encodeURIComponent(id));
+      const url = previewPw
+        ? API_URL + '?action=previewGet&id=' + encodeURIComponent(id) + '&password=' + encodeURIComponent(previewPw)
+        : API_URL + '?action=get&id=' + encodeURIComponent(id);
+      const res = await fetch(url);
       const data = await res.json();
       if(!data.ok){ document.getElementById('name').textContent = 'Actor not found.'; return; }
+      if(data.preview) showPreviewBanner(data.actor);
       render(data.actor);
     }catch(err){
       document.getElementById('name').textContent = 'Profile unavailable — check API_URL configuration.';
     }
+  }
+
+  function showPreviewBanner(a){
+    const banner = document.createElement('div');
+    banner.style.cssText = 'background:var(--gold); color:var(--ink); font-family:"IBM Plex Mono",monospace; font-size:12px; text-align:center; padding:8px; letter-spacing:.03em;';
+    banner.textContent = a.status === 'Active'
+      ? 'ADMIN PREVIEW — this is what producers see for this actor.'
+      : 'ADMIN PREVIEW — this actor is Hidden and not visible to producers right now.';
+    document.body.prepend(banner);
   }
 
   function render(a){

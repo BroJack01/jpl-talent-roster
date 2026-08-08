@@ -23,6 +23,20 @@
   .intro p{color:var(--graphite); font-size:14px; margin-top:8px; line-height:1.6;}
   .note{border:1px solid var(--line); background:var(--ink-2); padding:12px 14px; border-radius:2px; font-size:12.5px; color:var(--graphite); margin-top:16px;}
 
+  .nudge{border:1px solid var(--gold); background:var(--ink-2); padding:14px 16px; border-radius:2px; font-size:13px; color:var(--paper); line-height:1.6; margin:0 0 20px;}
+  .nudge b{color:var(--gold);}
+  .panel-label{font-family:'IBM Plex Mono',monospace; font-size:11px; text-transform:uppercase; letter-spacing:.08em; color:var(--gold); margin-bottom:14px;}
+  .field-label{font-family:'IBM Plex Mono',monospace; font-size:10.5px; text-transform:uppercase; letter-spacing:.06em; color:var(--graphite); margin-bottom:3px;}
+  #details{display:grid; grid-template-columns:repeat(2,1fr); gap:5px 16px; font-size:13px; color:var(--graphite); margin-bottom:4px;}
+  #details div b{color:var(--paper); font-weight:500;}
+  #bioText, #experienceText{font-size:13.5px; color:var(--paper); line-height:1.6; white-space:pre-line;}
+  .contact-row{display:flex; gap:10px; margin-top:18px; flex-wrap:wrap;}
+  .contact-row a.cta{
+    background:var(--gold); color:var(--ink); font-weight:600; font-size:13px; padding:9px 16px;
+    border-radius:2px; text-decoration:none; font-family:'Work Sans',sans-serif;
+  }
+  .contact-row a.cta.whatsapp{background:transparent; border:1px solid var(--gold); color:var(--gold);}
+
   .panel{background:var(--ink-2); border:1px solid var(--line); border-radius:3px; padding:24px; margin:24px 0;}
   label{font-family:'IBM Plex Mono',monospace; font-size:11px; text-transform:uppercase; letter-spacing:.05em; color:var(--gold); display:block; margin-bottom:6px; margin-top:16px;}
   label:first-of-type{margin-top:0;}
@@ -55,7 +69,20 @@
   <div class="intro" id="intro">
     <h1>Update your profile</h1>
     <p id="whoami">Checking your link…</p>
-    <div class="note">You can update your photo and social/contact links here. Your name, bio, and credits are managed by your agent — reach out to JPL directly if those need changes.</div>
+    <div class="note">You can update your photo and social/contact links here. Everything else below is set by your agent — it's shown so you can check it's right. If something's off, message JPL directly.</div>
+  </div>
+
+  <div class="nudge" id="admissionNudge" style="display:none;"></div>
+
+  <div class="panel" id="profilePanel" style="display:none;">
+    <div class="panel-label">Your profile on file (read-only)</div>
+    <div class="details" id="details"></div>
+    <div id="bioWrap" style="margin-top:14px;"><div class="field-label">Bio</div><p id="bioText"></p></div>
+    <div id="experienceWrap" style="margin-top:10px;"><div class="field-label">Credits & experience</div><p id="experienceText"></p></div>
+    <div class="contact-row">
+      <a class="cta" href="mailto:joelhoodpictures@ymail.com?subject=Profile correction">Email JPL</a>
+      <a class="cta whatsapp" href="https://wa.me/260977858275?text=Hi%2C%20I%27d%20like%20to%20correct%20something%20on%20my%20JPL%20profile" target="_blank" rel="noopener">WhatsApp JPL</a>
+    </div>
   </div>
 
   <div class="panel" id="form" style="display:none;">
@@ -82,6 +109,7 @@
   </div>
 </div>
 
+
 <footer><div class="wrap">Joackim Joel Sakala ©2026. All Rights Reserved.</div></footer>
 
 <script>
@@ -105,6 +133,27 @@
       document.getElementById('facebook').value = a.facebook || '';
       const preview = document.getElementById('preview');
       if(a.headshot) preview.style.backgroundImage = `url('${a.headshot}')`;
+
+      if (a.admissionStatus && a.admissionStatus !== 'Approved') {
+        const nudge = document.getElementById('admissionNudge');
+        nudge.innerHTML = `<b>Admission status: ${a.admissionStatus}.</b> Complete the Acting Mastery Course, or send JPL proof of equivalent professional training we can verify, to be reconsidered.`;
+        nudge.style.display = 'block';
+      }
+
+      const detailFields = [
+        ['Gender', a.gender], ['Casting age', a.castingAge], ['Height', a.height],
+        ['Build', a.bodyType], ['Hair', a.hair], ['Eyes', a.eyeColour],
+        ['Languages', a.languages], ['Accents', a.accents],
+        ['Casting categories', a.category], ['Special skills', a.specialSkills],
+        ['Distinguishing features', a.distinguishingFeatures]
+      ].filter(([, v]) => v);
+      document.getElementById('details').innerHTML = detailFields.length
+        ? detailFields.map(([label, v]) => `<div><b>${label}:</b> ${v}</div>`).join('')
+        : '<div>No casting details on file yet.</div>';
+      document.getElementById('bioText').textContent = a.bio || '— none on file —';
+      document.getElementById('experienceText').textContent = a.experience || '— none on file —';
+      document.getElementById('profilePanel').style.display = 'block';
+
       document.getElementById('form').style.display = 'block';
     }catch(err){
       document.getElementById('whoami').textContent = 'Could not load your profile — check API_URL configuration.';
