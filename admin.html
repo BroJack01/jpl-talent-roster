@@ -15,7 +15,8 @@
   body{background:var(--ink); color:var(--paper); font-family:'Work Sans',sans-serif; min-height:100vh;}
   .wrap{max-width:1020px; margin:0 auto; padding:0 28px;}
   header.top{border-bottom:1px solid var(--line); padding:22px 0;}
-  .brand{font-family:'IBM Plex Mono',monospace; font-size:13px; letter-spacing:.12em; text-transform:uppercase; color:var(--gold);}
+  .brand{font-family:'IBM Plex Mono',monospace; font-size:13px; letter-spacing:.12em; text-transform:uppercase; color:var(--gold); display:flex; align-items:center; gap:10px;}
+  .brand img{height:30px; width:auto; border-radius:3px; display:block;}
 
   .gate{max-width:360px; margin:120px auto; text-align:center;}
   .gate h1{font-family:'Fraunces',serif; font-size:28px; margin-bottom:18px;}
@@ -77,11 +78,12 @@
   .checklist label:last-child{border-bottom:none;}
   .checklist input{width:auto; margin:0;}
 </style>
+<script src="config.js"></script>
 </head>
 <body>
 
 <header class="top">
-  <div class="wrap"><div class="brand">Joelhood Pictures <span style="color:var(--graphite)">· Agent Console</span></div></div>
+  <div class="wrap"><div class="brand"><img src="logo.jpg" alt="Joelhood Pictures logo">Joelhood Pictures <span style="color:var(--graphite)">· Agent Console</span></div></div>
 </header>
 
 <div class="wrap">
@@ -222,8 +224,6 @@
 <footer><div class="wrap">Joackim Joel Sakala ©2026. All Rights Reserved.</div></footer>
 
 <script>
-  // ⬇️ Paste your deployed Google Apps Script Web App URL here
-  const API_URL = 'https://script.google.com/macros/s/AKfycbyWISwWYBYFvXAMV_sU7clepOPLkosc6dbv1tUa-p-WobBKOvKmpjPlGDyONxF9HN0H/exec';
   let PASSWORD = '';
   let ROSTER = [];
   let BRIEFS = [];

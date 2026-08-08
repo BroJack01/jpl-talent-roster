@@ -20,7 +20,8 @@
 
   header.top{border-bottom:1px solid var(--line); padding:22px 0;}
   .top .wrap{display:flex; justify-content:space-between; align-items:center; gap:16px; flex-wrap:wrap;}
-  .brand{font-family:'IBM Plex Mono',monospace; font-size:13px; letter-spacing:.12em; text-transform:uppercase; color:var(--gold);}
+  .brand{font-family:'IBM Plex Mono',monospace; font-size:13px; letter-spacing:.12em; text-transform:uppercase; color:var(--gold); display:flex; align-items:center; gap:10px;}
+  .brand img{height:30px; width:auto; border-radius:3px; display:block;}
   .brand span{color:var(--graphite);}
   nav a{font-family:'IBM Plex Mono',monospace; font-size:12px; letter-spacing:.08em; text-transform:uppercase; color:var(--graphite);}
   nav a:hover{color:var(--paper);}
@@ -68,16 +69,22 @@
   button:disabled{opacity:.5;}
   .msg{font-family:'IBM Plex Mono',monospace; font-size:12.5px; color:var(--graphite); margin-top:12px;}
 
+  .success-block{border:1px solid var(--gold); background:var(--ink-2); border-radius:3px; padding:26px 28px; margin-top:8px;}
+  .success-title{font-family:'Fraunces',serif; font-weight:600; font-size:22px; color:var(--gold); margin-bottom:10px;}
+  .success-block p{color:var(--paper); font-size:14.5px; line-height:1.7; margin-bottom:10px;}
+  .success-block .success-return{color:var(--graphite); font-size:13.5px; font-style:italic; margin-bottom:0;}
+
   footer{border-top:1px solid var(--line); padding:26px 0; color:var(--graphite); font-size:12.5px; display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px;}
 
   @media(max-width:700px){ .how{grid-template-columns:1fr;} .tiers{grid-template-columns:1fr;} .row2{grid-template-columns:1fr;} }
 </style>
+<script src="config.js"></script>
 </head>
 <body>
 
 <header class="top">
   <div class="wrap">
-    <div class="brand">Joelhood Pictures <span>· Casting Service</span></div>
+    <div class="brand"><img src="logo.jpg" alt="Joelhood Pictures logo">Joelhood Pictures <span>· Casting Service</span></div>
     <nav><a href="admin.html">Agent Login</a></nav>
   </div>
 </header>
@@ -182,6 +189,11 @@
       <button onclick="submitBrief()">Submit brief</button>
       <div class="msg" id="msg"></div>
     </form>
+    <div class="success-block" id="successBlock" style="display:none;">
+      <div class="success-title" id="successTitle"></div>
+      <p id="successBody"></p>
+      <p class="success-return">Our roster keeps growing and we're proud of who's on it — we'd love to have you back for your next production.</p>
+    </div>
   </div>
 </section>
 
@@ -193,8 +205,6 @@
 </footer>
 
 <script>
-  // ⬇️ Paste your deployed Google Apps Script Web App URL here
-  const API_URL = 'https://script.google.com/macros/s/AKfycbyWISwWYBYFvXAMV_sU7clepOPLkosc6dbv1tUa-p-WobBKOvKmpjPlGDyONxF9HN0H/exec';
 
   function toggleTpin(){
     const isZambia = document.getElementById('country').value === 'Zambia';
@@ -225,10 +235,11 @@
       const data = await res.json();
       if (!data.ok){ msg.textContent = data.error || 'Something went wrong — please try again.'; btn.disabled = false; return; }
       document.getElementById('briefForm').style.display = 'none';
-      msg.style.color = 'var(--gold)';
-      msg.textContent = data.pricingTier === 'Free'
-        ? `Brief received (${data.briefId}). This is a free request — we'll be in touch with a shortlist shortly.`
-        : `Brief received (${data.briefId}). This is a paid request — we'll confirm pricing with you before proceeding.`;
+      document.getElementById('successBlock').style.display = 'block';
+      document.getElementById('successTitle').textContent = `Brief received — ${data.briefId}`;
+      document.getElementById('successBody').textContent = data.pricingTier === 'Free'
+        ? `Your submission went through successfully. Check your email — we're matching it against the roster now, and you'll hear from us shortly with a curated shortlist.`
+        : `Your submission went through successfully. Check your email — we'll confirm pricing with you before we start matching actors to your brief.`;
     }catch(err){
       msg.textContent = 'Could not submit — check your connection and try again.';
       btn.disabled = false;

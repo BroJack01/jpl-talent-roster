@@ -15,7 +15,8 @@
   body{background:var(--ink); color:var(--paper); font-family:'Work Sans',sans-serif; min-height:100vh;}
   .wrap{max-width:560px; margin:0 auto; padding:0 24px;}
   header.top{border-bottom:1px solid var(--line); padding:22px 0;}
-  .brand{font-family:'IBM Plex Mono',monospace; font-size:13px; letter-spacing:.12em; text-transform:uppercase; color:var(--gold);}
+  .brand{font-family:'IBM Plex Mono',monospace; font-size:13px; letter-spacing:.12em; text-transform:uppercase; color:var(--gold); display:flex; align-items:center; gap:10px;}
+  .brand img{height:30px; width:auto; border-radius:3px; display:block;}
 
   .intro{padding:36px 0 10px;}
   .intro h1{font-family:'Fraunces',serif; font-weight:600; font-size:30px;}
@@ -38,14 +39,16 @@
   }
   button:disabled{opacity:.5; cursor:default;}
   .msg{font-family:'IBM Plex Mono',monospace; font-size:12.5px; color:var(--graphite); margin-top:10px;}
+  .hint{font-size:11.5px; color:var(--graphite); margin-top:6px; line-height:1.5;}
   .locked{font-size:13.5px; color:var(--graphite); margin-bottom:2px;}
   footer{border-top:1px solid var(--line); padding:26px 0; color:var(--graphite); font-size:12.5px;}
 </style>
+<script src="config.js"></script>
 </head>
 <body>
 
 <header class="top">
-  <div class="wrap"><div class="brand">Joelhood Pictures <span style="color:var(--graphite)">· Actor Portal</span></div></div>
+  <div class="wrap"><div class="brand"><img src="logo.jpg" alt="Joelhood Pictures logo">Joelhood Pictures <span style="color:var(--graphite)">· Actor Portal</span></div></div>
 </header>
 
 <div class="wrap">
@@ -60,6 +63,8 @@
     <div class="preview" id="preview"></div>
     <label style="margin-top:14px;">Upload new headshot</label>
     <input type="file" id="photo" accept="image/*">
+    <div class="hint" id="photoHint">Photo must be between 150KB and 200KB. Compress or resize if needed before uploading.</div>
+    <div class="msg" id="photoMsg"></div>
 
     <label>Instagram</label>
     <input id="instagram" placeholder="https://instagram.com/yourname">
@@ -80,8 +85,6 @@
 <footer><div class="wrap">Joackim Joel Sakala ©2026. All Rights Reserved.</div></footer>
 
 <script>
-  // ⬇️ Paste your deployed Google Apps Script Web App URL here
-  const API_URL = 'https://script.google.com/macros/s/AKfycbyWISwWYBYFvXAMV_sU7clepOPLkosc6dbv1tUa-p-WobBKOvKmpjPlGDyONxF9HN0H/exec';
 
   const params = new URLSearchParams(location.search);
   const token = params.get('token');
@@ -108,9 +111,22 @@
     }
   }
 
+  // Public-facing limit is 150KB–200KB. Actual accepted range is slightly wider (undisclosed)
+  // to absorb normal compression variance without rejecting borderline files unnecessarily.
+  const PHOTO_MIN_BYTES = 150 * 1024;
+  const PHOTO_MAX_BYTES = 220 * 1024;
+
   document.getElementById('photo').addEventListener('change', e => {
     const file = e.target.files[0];
+    const photoMsg = document.getElementById('photoMsg');
+    photoMsg.textContent = '';
     if(!file) return;
+    if(file.size < PHOTO_MIN_BYTES || file.size > PHOTO_MAX_BYTES){
+      photoMsg.textContent = 'Photo must be between 150KB and 200KB. Please resize and try again.';
+      e.target.value = '';
+      photoBase64 = null; photoMimeType = null; photoName = null;
+      return;
+    }
     photoMimeType = file.type; photoName = file.name;
     const reader = new FileReader();
     reader.onload = () => {

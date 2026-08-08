@@ -16,7 +16,8 @@
   a{color:inherit;}
   .wrap{max-width:960px; margin:0 auto; padding:0 28px;}
   header.top{border-bottom:1px solid var(--line); padding:22px 0;}
-  .brand{font-family:'IBM Plex Mono',monospace; font-size:13px; letter-spacing:.12em; text-transform:uppercase; color:var(--gold);}
+  .brand{font-family:'IBM Plex Mono',monospace; font-size:13px; letter-spacing:.12em; text-transform:uppercase; color:var(--gold); display:flex; align-items:center; gap:10px;}
+  .brand img{height:30px; width:auto; border-radius:3px; display:block;}
   .back{font-family:'IBM Plex Mono',monospace; font-size:12px; color:var(--graphite); display:inline-block; margin:26px 0 0;}
   .back:hover{color:var(--gold);}
 
@@ -58,11 +59,12 @@
 
   @media(max-width:640px){ .profile{grid-template-columns:1fr;} }
 </style>
+<script src="config.js"></script>
 </head>
 <body>
 
 <header class="top">
-  <div class="wrap"><div class="brand">Joelhood Pictures <span style="color:var(--graphite)">· Talent Roster</span></div></div>
+  <div class="wrap"><div class="brand"><img src="logo.jpg" alt="Joelhood Pictures logo">Joelhood Pictures <span style="color:var(--graphite)">· Talent Roster</span></div></div>
 </header>
 
 <div class="wrap">
@@ -100,8 +102,6 @@
 <footer><div class="wrap">Joackim Joel Sakala ©2026. All Rights Reserved.</div></footer>
 
 <script>
-  // ⬇️ Paste your deployed Google Apps Script Web App URL here
-  const API_URL = 'https://script.google.com/macros/s/AKfycbyWISwWYBYFvXAMV_sU7clepOPLkosc6dbv1tUa-p-WobBKOvKmpjPlGDyONxF9HN0H/exec';
 
   const params = new URLSearchParams(location.search);
   const id = params.get('id');
